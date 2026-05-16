@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#9f1717">
+    <title>Shaadi Biodata PDF Maker</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<main class="app-shell">
+    <section class="editor-panel" aria-label="Biodata details form">
+        <header class="app-header">
+            <div>
+                <p class="eyebrow">Local PDF Maker</p>
+                <h1>Shaadi Biodata</h1>
+            </div>
+            <button class="primary-action" id="downloadPdf" type="button">Save & Generate PDF</button>
+        </header>
+
+        <form id="biodataForm">
+            <section class="form-section">
+                <h2>Template</h2>
+                <div class="template-grid" role="radiogroup" aria-label="Template style">
+                    <label class="template-card">
+                        <input type="radio" name="template" value="red" checked>
+                        <span class="template-swatch red"></span>
+                        <span>Classic Red</span>
+                    </label>
+                    <label class="template-card">
+                        <input type="radio" name="template" value="cream">
+                        <span class="template-swatch cream"></span>
+                        <span>Floral Cream</span>
+                    </label>
+                    <label class="template-card">
+                        <input type="radio" name="template" value="navy">
+                        <span class="template-swatch navy"></span>
+                        <span>Royal Blue</span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-head">
+                    <h2>Photo</h2>
+                    <label class="include-toggle photo-toggle">
+                        <input id="photoEnabled" type="checkbox" checked>
+                        <span>Show photo box</span>
+                    </label>
+                </div>
+                <label>
+                    <span>Profile photo</span>
+                    <input id="photo" name="photo" type="file" accept="image/*">
+                </label>
+            </section>
+
+            <section class="form-section">
+                <div class="section-head">
+                    <h2>Personal Details</h2>
+                    <button class="secondary-action small-action" data-add-section="personal" type="button">Add Field</button>
+                </div>
+                <div class="field-stack" id="personalFields"></div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-head">
+                    <h2>Family Details</h2>
+                    <button class="secondary-action small-action" data-add-section="family" type="button">Add Field</button>
+                </div>
+                <div class="field-stack" id="familyFields"></div>
+            </section>
+
+            <section class="form-section">
+                <div class="section-head">
+                    <h2>Contact Details</h2>
+                    <button class="secondary-action small-action" data-add-section="contact" type="button">Add Field</button>
+                </div>
+                <div class="field-stack" id="contactFields"></div>
+            </section>
+        </form>
+    </section>
+
+    <section class="preview-panel" aria-label="Live biodata preview">
+        <div class="preview-toolbar">
+            <h2>Live Preview</h2>
+            <button class="secondary-action" id="clearForm" type="button">Clear</button>
+        </div>
+
+        <article class="biodata-sheet theme-red" id="biodataSheet">
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+
+            <header class="sheet-header">
+                <p>|| Shri Ganeshaya Namah ||</p>
+                <h1 id="previewName">Marriage Biodata</h1>
+                <h2>Marriage Biodata</h2>
+            </header>
+
+            <div class="sheet-body">
+                <div class="details-area">
+                    <section class="sheet-section">
+                        <h3>Personal Details</h3>
+                        <dl id="personalPreview"></dl>
+                    </section>
+
+                    <section class="sheet-section">
+                        <h3>Family Details</h3>
+                        <dl id="familyPreview"></dl>
+                    </section>
+
+                    <section class="sheet-section">
+                        <h3>Contact Details</h3>
+                        <dl id="contactPreview"></dl>
+                    </section>
+                </div>
+
+                <aside class="photo-frame">
+                    <img id="photoPreview" alt="Profile preview">
+                    <span id="photoPlaceholder">Photo</span>
+                </aside>
+            </div>
+        </article>
+    </section>
+</main>
+
+<script src="/app.js" defer></script>
+</body>
+</html>

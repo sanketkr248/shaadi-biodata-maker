@@ -1,0 +1,16 @@
+{
+  "name": "Shaadi Biodata PDF Maker",
+  "short_name": "Biodata",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3f0eb",
+  "theme_color": "#9f1717",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
