@@ -77,6 +77,7 @@ button {
     position: sticky;
     top: 18px;
     padding: 16px;
+    overflow-x: auto;
 }
 
 .app-header,
@@ -86,6 +87,14 @@ button {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+}
+
+.section-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .app-header,
@@ -123,6 +132,13 @@ h1 {
     border-radius: 8px;
     background: linear-gradient(180deg, #fffdf9, #fff8f0);
     border: 1px solid #eaded3;
+    transition: box-shadow 160ms ease, border-color 160ms ease;
+}
+
+.form-section:has(.collapse-toggle:focus-visible),
+.form-section:hover {
+    border-color: rgba(181, 31, 31, 0.26);
+    box-shadow: 0 10px 24px rgba(62, 39, 35, 0.07);
 }
 
 .form-section h2,
@@ -141,6 +157,18 @@ h1 {
     display: grid;
     gap: 10px;
     margin-top: 12px;
+}
+
+.collapsible-content {
+    display: grid;
+}
+
+.collapsible-section.is-collapsed {
+    background: linear-gradient(180deg, #fffdf9, #fff5eb);
+}
+
+.collapsible-section.is-collapsed .collapsible-content {
+    display: none;
 }
 
 .field-row {
@@ -239,7 +267,8 @@ textarea {
 
 .primary-action,
 .secondary-action,
-.remove-field {
+.remove-field,
+.collapse-toggle {
     border: 0;
     border-radius: 8px;
     min-height: 42px;
@@ -264,6 +293,31 @@ textarea {
     min-height: 34px;
     padding: 0 10px;
     font-size: 0.82rem;
+}
+
+.collapse-toggle {
+    min-height: 34px;
+    border: 1px solid rgba(181, 31, 31, 0.22);
+    background: linear-gradient(180deg, #ffffff, #fff4eb);
+    color: var(--accent-dark);
+    padding: 0 12px;
+    font-size: 0.82rem;
+}
+
+.collapse-toggle::after {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-left: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 160ms ease;
+}
+
+.is-collapsed .collapse-toggle::after {
+    transform: translateY(1px) rotate(-45deg);
 }
 
 .remove-field {
@@ -634,14 +688,19 @@ dd::before {
 
 @media (max-width: 560px) {
     .app-shell {
-        width: min(100% - 18px, 1340px);
+        width: 100%;
         padding-top: 10px;
+        padding-inline: 10px;
     }
 
     .app-header,
     .preview-toolbar,
     .section-head {
         display: grid;
+    }
+
+    .section-actions {
+        justify-content: stretch;
     }
 
     .primary-action,
@@ -667,46 +726,19 @@ dd::before {
         padding: 12px;
     }
 
+    .preview-panel {
+        margin-inline: -10px;
+        border-radius: 0;
+    }
+
+    .preview-toolbar {
+        margin-inline: 10px;
+    }
+
     .biodata-sheet {
-        padding: 26px 24px;
-        border-width: 6px;
-    }
-
-    .sheet-body {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .photo-frame {
-        position: absolute;
-        right: 34px;
-        top: 112px;
-        width: 82px;
-        margin: 0;
-    }
-
-    dl {
-        grid-template-columns: 108px 1fr;
-    }
-
-    dt,
-    dd {
-        font-size: 0.58rem;
-    }
-
-    .sheet-section h3 {
-        font-size: 0.86rem;
-    }
-
-    .sheet-header {
-        display: grid;
-        gap: 3px;
-        margin-bottom: 12px;
-    }
-
-    .sheet-header p,
-    .sheet-header h2 {
-        font-size: 0.72rem;
+        width: 720px;
+        max-width: none;
+        margin-inline: 10px;
     }
 }
 
@@ -716,8 +748,30 @@ dd::before {
         margin: 0;
     }
 
+    html,
     body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        overflow: hidden;
         background: #ffffff;
+    }
+
+    body.printing * {
+        visibility: hidden;
+    }
+
+    body.printing .biodata-sheet,
+    body.printing .biodata-sheet * {
+        visibility: visible;
+    }
+
+    body.printing .editor-panel,
+    body.printing .preview-toolbar,
+    body.printing .preview-panel {
+        border: 0;
+        box-shadow: none;
+        background: transparent;
     }
 
     body.printing .editor-panel,
@@ -725,24 +779,37 @@ dd::before {
         display: none;
     }
 
-    body.printing .app-shell,
+    body.printing .app-shell {
+        display: block;
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
     body.printing .preview-panel {
         display: block;
-        width: auto;
+        width: 210mm;
+        height: 297mm;
         margin: 0;
         padding: 0;
         border: 0;
+        overflow: hidden;
         box-shadow: none;
         background: transparent;
     }
 
     body.printing .biodata-sheet {
+        position: fixed;
+        inset: 0;
         width: 210mm;
         height: 297mm;
         max-width: none;
         margin: 0;
         box-shadow: none;
         break-inside: avoid;
+        page-break-inside: avoid;
         print-color-adjust: exact;
         -webkit-print-color-adjust: exact;
     }

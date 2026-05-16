@@ -1,4 +1,5 @@
 const STORAGE_KEY = "shaadi-biodata-details";
+const UI_STORAGE_KEY = "shaadi-biodata-ui";
 
 const sectionTargets = {
     personal: {fields: "personalFields", preview: "personalPreview"},
@@ -61,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     state = normalizeState(readSavedData());
     renderFieldEditors();
     hydrateTemplate();
+    hydrateCollapsibleSections();
     bindEvents();
     renderPreview();
 
@@ -77,6 +79,9 @@ function bindEvents() {
     document.getElementById("downloadPdf").addEventListener("click", generatePdf);
     document.querySelectorAll("[data-add-section]").forEach((button) => {
         button.addEventListener("click", () => addCustomField(button.dataset.addSection));
+    });
+    document.querySelectorAll(".collapse-toggle").forEach((button) => {
+        button.addEventListener("click", () => toggleSection(button.closest(".collapsible-section")));
     });
 }
 
@@ -229,6 +234,39 @@ function hydrateTemplate() {
     photoEnabled.checked = state.photoEnabled;
 }
 
+function hydrateCollapsibleSections() {
+    const uiState = readUiState();
+    document.querySelectorAll(".collapsible-section").forEach((section) => {
+        const collapsed = Boolean(uiState.collapsed?.[section.dataset.sectionId]);
+        setSectionCollapsed(section, collapsed);
+    });
+}
+
+function toggleSection(section) {
+    const collapsed = !section.classList.contains("is-collapsed");
+    setSectionCollapsed(section, collapsed);
+    const uiState = readUiState();
+    uiState.collapsed = {...(uiState.collapsed || {}), [section.dataset.sectionId]: collapsed};
+    localStorage.setItem(UI_STORAGE_KEY, JSON.stringify(uiState));
+}
+
+function setSectionCollapsed(section, collapsed) {
+    const button = section.querySelector(".collapse-toggle");
+    section.classList.toggle("is-collapsed", collapsed);
+    if (button) {
+        button.setAttribute("aria-expanded", String(!collapsed));
+        button.querySelector("span").textContent = collapsed ? "Open" : "Close";
+    }
+}
+
+function readUiState() {
+    try {
+        return JSON.parse(localStorage.getItem(UI_STORAGE_KEY) || "{}");
+    } catch {
+        return {};
+    }
+}
+
 function handleFormChange(event) {
     const target = event.target;
 
@@ -379,6 +417,7 @@ function clearForm() {
     localStorage.removeItem(STORAGE_KEY);
     renderFieldEditors();
     hydrateTemplate();
+    hydrateCollapsibleSections();
     renderPreview();
 }
 
@@ -386,7 +425,8 @@ function generatePdf() {
     saveData();
     renderPreview();
     document.body.classList.add("printing");
-    window.print();
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.print());
 }
 
 window.addEventListener("afterprint", () => {

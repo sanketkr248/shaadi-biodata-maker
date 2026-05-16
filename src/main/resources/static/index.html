@@ -20,9 +20,15 @@
         </header>
 
         <form id="biodataForm">
-            <section class="form-section">
-                <h2>Template</h2>
-                <div class="template-grid" role="radiogroup" aria-label="Template style">
+            <section class="form-section collapsible-section" data-section-id="template">
+                <div class="section-head">
+                    <h2>Template</h2>
+                    <button class="collapse-toggle" type="button" aria-expanded="true">
+                        <span>Close</span>
+                    </button>
+                </div>
+                <div class="collapsible-content">
+                    <div class="template-grid" role="radiogroup" aria-label="Template style">
                     <label class="template-card">
                         <input type="radio" name="template" value="red" checked>
                         <span class="template-swatch red"></span>
@@ -38,45 +44,74 @@
                         <span class="template-swatch navy"></span>
                         <span>Royal Blue</span>
                     </label>
+                    </div>
                 </div>
             </section>
 
-            <section class="form-section">
+            <section class="form-section collapsible-section" data-section-id="photo">
                 <div class="section-head">
                     <h2>Photo</h2>
-                    <label class="include-toggle photo-toggle">
-                        <input id="photoEnabled" type="checkbox" checked>
-                        <span>Show photo box</span>
+                    <div class="section-actions">
+                        <label class="include-toggle photo-toggle">
+                            <input id="photoEnabled" type="checkbox" checked>
+                            <span>Show photo box</span>
+                        </label>
+                        <button class="collapse-toggle" type="button" aria-expanded="true">
+                            <span>Close</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapsible-content">
+                    <label>
+                        <span>Profile photo</span>
+                        <input id="photo" name="photo" type="file" accept="image/*">
                     </label>
                 </div>
-                <label>
-                    <span>Profile photo</span>
-                    <input id="photo" name="photo" type="file" accept="image/*">
-                </label>
             </section>
 
-            <section class="form-section">
+            <section class="form-section collapsible-section" data-section-id="personal">
                 <div class="section-head">
                     <h2>Personal Details</h2>
-                    <button class="secondary-action small-action" data-add-section="personal" type="button">Add Field</button>
+                    <div class="section-actions">
+                        <button class="secondary-action small-action" data-add-section="personal" type="button">Add Field</button>
+                        <button class="collapse-toggle" type="button" aria-expanded="true">
+                            <span>Close</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="field-stack" id="personalFields"></div>
+                <div class="collapsible-content">
+                    <div class="field-stack" id="personalFields"></div>
+                </div>
             </section>
 
-            <section class="form-section">
+            <section class="form-section collapsible-section" data-section-id="family">
                 <div class="section-head">
                     <h2>Family Details</h2>
-                    <button class="secondary-action small-action" data-add-section="family" type="button">Add Field</button>
+                    <div class="section-actions">
+                        <button class="secondary-action small-action" data-add-section="family" type="button">Add Field</button>
+                        <button class="collapse-toggle" type="button" aria-expanded="true">
+                            <span>Close</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="field-stack" id="familyFields"></div>
+                <div class="collapsible-content">
+                    <div class="field-stack" id="familyFields"></div>
+                </div>
             </section>
 
-            <section class="form-section">
+            <section class="form-section collapsible-section" data-section-id="contact">
                 <div class="section-head">
                     <h2>Contact Details</h2>
-                    <button class="secondary-action small-action" data-add-section="contact" type="button">Add Field</button>
+                    <div class="section-actions">
+                        <button class="secondary-action small-action" data-add-section="contact" type="button">Add Field</button>
+                        <button class="collapse-toggle" type="button" aria-expanded="true">
+                            <span>Close</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="field-stack" id="contactFields"></div>
+                <div class="collapsible-content">
+                    <div class="field-stack" id="contactFields"></div>
+                </div>
             </section>
         </form>
     </section>
