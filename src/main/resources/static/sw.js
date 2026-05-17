@@ -1,4 +1,4 @@
-const CACHE_NAME = "shaadi-biodata-maker-v7";
+const CACHE_NAME = "shaadi-biodata-maker-v8";
 const ASSETS = [
     "/",
     "/index.html",

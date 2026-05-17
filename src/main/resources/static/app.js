@@ -8,7 +8,7 @@ const sectionTargets = {
 };
 
 const baseFields = [
-    ["personal", "fullName", "Full Name", "Rohit Mahesh Patil"],
+    ["personal", "fullName", "Full Name", "Sanket Kumar"],
     ["personal", "dob", "Date of Birth", "12/04/1994, 06:20 AM"],
     ["personal", "height", "Height", "5'11\""],
     ["personal", "birthPlace", "Place of Birth", "Kolhapur, Maharashtra"],
@@ -21,9 +21,9 @@ const baseFields = [
     ["personal", "gan", "Gan", "Manushya"],
     ["personal", "complexion", "Complexion", "Wheatish"],
     ["personal", "bloodGroup", "Blood Group", "O+"],
-    ["personal", "education", "Education", "B.E. Civil Engineering"],
+    ["personal", "education", "Education", "Btech computer science"],
     ["personal", "occupation", "Occupation", "Site Engineer"],
-    ["personal", "income", "Annual Income", ""],
+    ["personal", "income", "Salary", ""],
     ["family", "fatherName", "Father's Name", "Mahesh Shivaji Patil"],
     ["family", "fatherOccupation", "Father's Occupation", "Agriculture"],
     ["family", "motherName", "Mother's Name", "Savitri Mahesh Patil"],
@@ -94,6 +94,7 @@ function normalizeState(saved) {
     next.template = saved.template || next.template;
     next.photoEnabled = saved.photoEnabled !== false;
     next.values = {...next.values, ...(saved.values || legacyValues(saved))};
+    migrateOldDefaults(next.values);
     next.enabled = {...next.enabled, ...(saved.enabled || {})};
     next.customFields = Array.isArray(saved.customFields) ? saved.customFields : [];
     next.order = mergeOrder(saved.order, next.customFields);
@@ -104,6 +105,18 @@ function normalizeState(saved) {
     }
 
     return next;
+}
+
+function migrateOldDefaults(values) {
+    if (values.fullName === "Rohit Mahesh Patil") {
+        values.fullName = "Sanket Kumar";
+    }
+    if (values.education === "B.E. Civil Engineering") {
+        values.education = "Btech computer science";
+    }
+    if (values.income === undefined || values.income === null) {
+        values.income = "";
+    }
 }
 
 function mergeOrder(savedOrder, customFields) {
@@ -421,12 +434,58 @@ function clearForm() {
     renderPreview();
 }
 
-function generatePdf() {
+async function generatePdf() {
     saveData();
     renderPreview();
-    document.body.classList.add("printing");
-    window.scrollTo(0, 0);
-    requestAnimationFrame(() => window.print());
+    const button = document.getElementById("downloadPdf");
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Generating PDF";
+
+    try {
+        if (!window.html2canvas || !window.jspdf?.jsPDF) {
+            throw new Error("PDF libraries unavailable");
+        }
+
+        document.body.classList.add("pdf-exporting");
+        await nextFrame();
+
+        const canvas = await window.html2canvas(sheet, {
+            backgroundColor: null,
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            width: sheet.offsetWidth,
+            height: sheet.offsetHeight,
+            windowWidth: sheet.offsetWidth,
+            windowHeight: sheet.offsetHeight
+        });
+
+        const pdf = new window.jspdf.jsPDF({
+            orientation: "portrait",
+            unit: "mm",
+            format: "a4"
+        });
+        const image = canvas.toDataURL("image/jpeg", 0.98);
+        pdf.addImage(image, "JPEG", 0, 0, 210, 297, undefined, "FAST");
+        pdf.save(`${fileNameFrom(state.values.fullName || "biodata")}.pdf`);
+    } catch {
+        document.body.classList.add("printing");
+        window.scrollTo(0, 0);
+        requestAnimationFrame(() => window.print());
+    } finally {
+        document.body.classList.remove("pdf-exporting");
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+function nextFrame() {
+    return new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+}
+
+function fileNameFrom(value) {
+    return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "biodata";
 }
 
 window.addEventListener("afterprint", () => {
